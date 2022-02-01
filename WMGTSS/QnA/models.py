@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class Course(models.Model):
     name = models.CharField(max_length=200)
 
+
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     univeristy_id = models.CharField(max_length=20, blank=True)
@@ -21,14 +22,24 @@ class Student(Profile):
 class Tutor(Profile):
     pass
 
+class Board(models.Model):
+    course = models.OneToOneField(Course, on_delete=models.CASCADE)
+    name = models.CharField(max_length=99)
+    owner = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="owned_by_tutor")
+    tutors = models.ManyToManyField(Tutor, related_name="viewable_by_tutor")
+    viewers = models.ManyToManyField(Profile)
+
+
 class Question(models.Model):
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     submitted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=99)
     body = models.TextField(max_length=999)
     likes = models.IntegerField()
-
+    submit_date = models.DateField()
 
 class Answer(models.Model):
     question = models.OneToOneField(Question, on_delete=models.CASCADE)
     answered_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
     body = models.TextField(max_length=999)
+    answered_date = models.DateField()
