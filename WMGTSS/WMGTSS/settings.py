@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-v+i%-5kspcwuxjn&z6fa$mc&1$#t_^x#6-=6lq#z)cxqit_0zm
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Application definition
 
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'WMGTSS.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(BASE_DIR.joinpath('templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
