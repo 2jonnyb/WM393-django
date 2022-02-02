@@ -1,8 +1,8 @@
 {% extends "QnA/base.html" %}
 {% block content %}
     {% if user.is_authenticated %}
-        {% include 'QnA/includes/board-form.html' %}
-        {{ user.username }}'s Boards
+        <a href="/create-board/">Create boards</a>
+        <p>{{ user.username }}'s Boards</p>
         <ul>
             {% for board in boards %}
             <li>{{board.name}}</li>

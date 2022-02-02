@@ -9,4 +9,4 @@ class QuestionForm(ModelForm):
 class BoardForm(ModelForm):
     class Meta:
         model = Board
-        fields = ['course', 'name', 'owner', 'tutors', 'viewers']
+        fields = ['course', 'name', 'tutors', 'viewers']

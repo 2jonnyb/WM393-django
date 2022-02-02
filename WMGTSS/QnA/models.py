@@ -5,27 +5,37 @@ from django.contrib.auth.models import User
 
 class Course(models.Model):
     name = models.CharField(max_length=200)
+    def __str__(self):
+        return(self.name)
 
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     university_id = models.CharField(max_length=20, blank=True)
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True) 
     courses = models.ManyToManyField(Course, blank=True)
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
+        #return(self.user.username)
+
     
 class Student(Profile):
     pass
 
+
 class Tutor(Profile):
     pass
 
+
 class Board(models.Model):
-    course = models.OneToOneField(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=99, blank=True)
     owner = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="owned_by_tutor", blank=True)
     tutors = models.ManyToManyField(Tutor, related_name="viewable_by_tutor")
     viewers = models.ManyToManyField(Profile)
+    def __str__(self):
+        return(self.name)
 
 
 class Question(models.Model):
