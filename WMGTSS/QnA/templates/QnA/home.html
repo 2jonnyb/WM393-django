@@ -5,7 +5,7 @@
         <p>{{ user.username }}'s Boards</p>
         <ul>
             {% for board in boards %}
-            <li>{{board.name}}</li>
+            <a href="{{ board.get_absolute_url }}"><li>{{ board.name }}</li></a>
             {% endfor %}
         </ul>
     {% else %}

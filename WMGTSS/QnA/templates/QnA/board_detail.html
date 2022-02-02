@@ -1,0 +1,14 @@
+{% extends "QnA/base.html" %}
+{% block content %}
+    <div>
+        <h2>
+            {{ board.name }}
+        </h2>
+    </div>
+    <h3>Questions</h3>
+    <ul>
+        {% for question in questions %}
+            {{ question.title }}
+        {% endfor %}
+    </ul>
+{% endblock content %}

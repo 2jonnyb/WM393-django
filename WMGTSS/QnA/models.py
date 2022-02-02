@@ -1,6 +1,9 @@
 from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.template.defaultfilters import slugify
+
 # Create your models here.
 
 class Course(models.Model):
@@ -34,8 +37,15 @@ class Board(models.Model):
     owner = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="owned_by_tutor", blank=True)
     tutors = models.ManyToManyField(Tutor, related_name="viewable_by_tutor")
     viewers = models.ManyToManyField(Profile)
+    slug = models.SlugField(null=False, unique=True)
     def __str__(self):
         return(self.name)
+    def get_absolute_url(self):
+        return reverse('board_detail', kwargs={'slug': self.slug})
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
 
 class Question(models.Model):

@@ -4,6 +4,10 @@ from django.contrib import admin
 
 from .models import Question, Profile, Course, Student, Tutor, Answer, Board
 
+class BoardAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+
 admin.site.register(Question)
 admin.site.register(Profile)
 admin.site.register(Course)
