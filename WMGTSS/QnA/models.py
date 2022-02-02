@@ -9,9 +9,7 @@ class Course(models.Model):
 
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    univeristy_id = models.CharField(max_length=20, blank=True)
-    first_name = models.CharField(max_length=99, blank=True)
-    surname = models.CharField(max_length=99, blank=True)
+    university_id = models.CharField(max_length=20, blank=True)
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True) 
     courses = models.ManyToManyField(Course, blank=True)
@@ -24,8 +22,8 @@ class Tutor(Profile):
 
 class Board(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE)
-    name = models.CharField(max_length=99)
-    owner = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="owned_by_tutor")
+    name = models.CharField(max_length=99, blank=True)
+    owner = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="owned_by_tutor", blank=True)
     tutors = models.ManyToManyField(Tutor, related_name="viewable_by_tutor")
     viewers = models.ManyToManyField(Profile)
 

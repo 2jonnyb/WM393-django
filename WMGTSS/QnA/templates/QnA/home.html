@@ -1,15 +1,15 @@
 {% extends "QnA/base.html" %}
 {% block content %}
-    {%for post in posts%}
-        <article >
-            <div >
-            <div >
-                <a href="#">{{ post.author }}</a>
-                <small >{{ post.date_posted }}</small>
-            </div>
-            <h2><a  href="#">{{ post.title }}</a></h2>
-            <p >{{ post.content }}</p>
-            </div>
-        </article>  
-    {% endfor %}
+    {% if user.is_authenticated %}
+        {% include 'QnA/includes/board-form.html' %}
+        {{ user.username }}'s Boards
+        <ul>
+            {% for board in boards %}
+            <li>{{board.name}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You must be logged in to use this function!</p>
+        <a href="{% url 'login' %}">Log In</a>
+    {% endif %}
 {% endblock content %}
