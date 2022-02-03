@@ -1,6 +1,6 @@
 from re import template
 from django.shortcuts import redirect, render
-from .models import Board, Tutor
+from .models import Board, Tutor, Question
 from .forms import BoardForm, QuestionForm
 from django.views.generic.detail import DetailView
 
@@ -21,9 +21,10 @@ def create_board(request):
         return redirect('create-board/')
     board_form = BoardForm()
     boards = Board.objects.all()
+    questions = Board
     context = {
         'boards':boards,
-        'board_form':board_form
+        'board_form':board_form,
     }
     return render(request, 'QnA/board-form.html', context)
 

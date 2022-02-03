@@ -1,5 +1,6 @@
 {% extends "QnA/base.html" %}
 {% block content %}
+    <a href="/">Back to My Boards</a>
     <div>
         <h2>
             {{ board.name }}
@@ -7,8 +8,12 @@
     </div>
     <h3>Questions</h3>
     <ul>
-        {% for question in questions %}
-            {{ question.title }}
+        {% for question in board.get_all_questions %}
+            <h4>{{ question.title }}</h4>
+            <p>Asked by {{ question.submitted_by.user.first_name }} {{ question.submitted_by.user.last_name }} at {{ question.submit_date }}</p>
+            <p>{{ question.body }}</p>
+            <p>{{ question.likes }} likes</p>
+
         {% endfor %}
     </ul>
 {% endblock content %}

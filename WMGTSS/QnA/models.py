@@ -44,20 +44,22 @@ class Board(models.Model):
         return reverse('board_detail', kwargs={'slug': self.slug})
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
+    def get_all_questions(self):
+        return self.posted_on_board.filter()
 
 
 class Question(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name="posted_on_board")
     submitted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=99)
     body = models.TextField(max_length=999)
-    likes = models.IntegerField()
-    submit_date = models.DateField()
+    likes = models.IntegerField(default=0)
+    submit_date = models.DateField(auto_now_add=True)
 
 class Answer(models.Model):
-    question = models.OneToOneField(Question, on_delete=models.CASCADE)
+    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name="answer_to")
     answered_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
     body = models.TextField(max_length=999)
-    answered_date = models.DateField()
+    answered_date = models.DateField(auto_now_add=True)
