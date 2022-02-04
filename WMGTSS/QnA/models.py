@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.template.defaultfilters import slugify
+from django.db.models import Count
 
 # Create your models here.
 
@@ -53,17 +54,14 @@ class Board(models.Model):
     def __str__(self):
         return(self.name)
     def get_absolute_url(self):
-        return reverse('board_detail', kwargs={'slug': self.slug})
+        return reverse('board_detail', kwargs={'board_slug': self.slug})
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
     def get_all_questions(self):
-        return self.posted_on_board.filter()
-    def get_answered_questions(self):
-        return self.posted_on_board.filter(answered=True)
-    def get_unanswered_questions(self):
-        return self.posted_on_board.filter(answered=False)
+        questions = self.posted_on_board.filter()
+        return questions.annotate(number_of_likes=Count('like'))
 
 
 class Question(models.Model):
@@ -71,12 +69,18 @@ class Question(models.Model):
     submitted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=99)
     body = models.TextField(max_length=999)
-    likes = models.IntegerField(default=0)
+    #likes = models.IntegerField(default=0)
     submit_date = models.DateField(auto_now_add=True)
     answered = models.BooleanField(default=False)
+
+
 
 class Answer(models.Model):
     question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name="answer")
     answered_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True, related_name="answered_by")
     body = models.TextField(max_length=999)
     answered_date = models.DateField(auto_now_add=True)
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
