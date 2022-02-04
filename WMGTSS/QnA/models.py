@@ -1,4 +1,5 @@
 from tkinter import CASCADE
+from trace import Trace
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -13,7 +14,7 @@ class Course(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     university_id = models.CharField(max_length=20, blank=True)
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True) 
@@ -21,14 +22,25 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
         #return(self.user.username)
+    def full_name(self):
+        return f'{self.user.first_name} {self.user.last_name}'
+    def profile_type(self):
+        if hasattr(self, 'student'):
+            return self.student.__class__.__name__
+        elif hasattr(self, 'tutor'):
+            return self.tutor.__class__.__name__
+        else:
+            return self.__class__.__name__
+
 
     
 class Student(Profile):
-    pass
-
+    def profile_type(self):
+        return('Student')
 
 class Tutor(Profile):
-    pass
+    def profile_type(self):
+        return('Tutor')
 
 
 class Board(models.Model):
@@ -36,7 +48,7 @@ class Board(models.Model):
     name = models.CharField(max_length=99, blank=True)
     owner = models.ForeignKey(Tutor, on_delete=models.CASCADE, related_name="owned_by_tutor", blank=True)
     tutors = models.ManyToManyField(Tutor, related_name="viewable_by_tutor")
-    viewers = models.ManyToManyField(Profile)
+    viewers = models.ManyToManyField(Profile, related_name="viewable_by")
     slug = models.SlugField(null=False, unique=True)
     def __str__(self):
         return(self.name)
@@ -48,6 +60,10 @@ class Board(models.Model):
         return super().save(*args, **kwargs)
     def get_all_questions(self):
         return self.posted_on_board.filter()
+    def get_answered_questions(self):
+        return self.posted_on_board.filter(answered=True)
+    def get_unanswered_questions(self):
+        return self.posted_on_board.filter(answered=False)
 
 
 class Question(models.Model):
@@ -57,9 +73,10 @@ class Question(models.Model):
     body = models.TextField(max_length=999)
     likes = models.IntegerField(default=0)
     submit_date = models.DateField(auto_now_add=True)
+    answered = models.BooleanField(default=False)
 
 class Answer(models.Model):
-    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name="answer_to")
-    answered_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
+    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name="answer")
+    answered_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True, related_name="answered_by")
     body = models.TextField(max_length=999)
     answered_date = models.DateField(auto_now_add=True)

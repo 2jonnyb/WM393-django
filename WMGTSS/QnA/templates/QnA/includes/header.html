@@ -1,6 +1,6 @@
 <div class="header">
     {% if user.is_authenticated %}
-    Hi {{ user.username }}!
+    Hi {{ user.profile.full_name }} ({{ user.username }})! ({{ user.profile.profile_type }})
     <p><a href="{% url 'logout' %}">Log Out</a></p>
     {% else %}
     <p>You are not logged in</p>
