@@ -11,15 +11,15 @@
     {% endif %}
     <h3>Questions</h3>
     <ul>
-        {% for question in board.get_all_questions %}
+        {% for question in questions %}
             {% if request.user.profile.profile_type == 'Tutor' or request.user.profile.profile_type == 'Student' and question.answered %}
                 <h4>{{ question.title }}</h4>
                 <p>Asked by {{ question.submitted_by.user.first_name }} {{ question.submitted_by.user.last_name }} at {{ question.submit_date }}</p>
                 <p>{{ question.body }}</p>
-                <div class="like" display="inline">  
+                <div class="like" display="inline">
                     <form method='post' display="inline">
                         {% csrf_token %}
-                        <span>{{question.number_of_likes }} likes</span>
+                        <span {%if question.liked %}style="font-weight: bolder" {% endif %}>{{question.number_of_likes }} likes</span>
                         <input type="hidden" name="question_answered" value="{{ question.pk }}">
                         <input type="submit", value="👍">
                     </form>

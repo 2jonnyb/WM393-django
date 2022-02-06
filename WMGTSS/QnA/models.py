@@ -63,7 +63,6 @@ class Board(models.Model):
         questions = self.posted_on_board.filter()
         return questions.annotate(number_of_likes=Count('like'))
 
-
 class Question(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name="posted_on_board")
     submitted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
@@ -72,7 +71,6 @@ class Question(models.Model):
     #likes = models.IntegerField(default=0)
     submit_date = models.DateField(auto_now_add=True)
     answered = models.BooleanField(default=False)
-
 
 
 class Answer(models.Model):

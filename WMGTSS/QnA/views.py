@@ -5,7 +5,7 @@ from .forms import AnswerForm, BoardForm, QuestionForm, LikeForm
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.edit import ModelFormMixin
-from django.db.models import Count
+from django.db.models import Count, Exists, OuterRef
 
 # Create your views here.
 def home(request):
@@ -58,20 +58,20 @@ class SubmitAnswerView(FormView):
         form.instance.submitted_by = self.request.user.profile
         form.save()
         return super().form_valid(form)
+
 class BoardView(DetailView, ModelFormMixin):
     model = Board
     template_name = 'QnA/board_detail.html'
     slug_url_kwarg = 'board_slug'
     form_class = AnswerForm
-    # def form_valid(self, form):
-    #     form.instance.board = Question.objects.get(slug=self.kwargs['board_slug'])
-    #     form.instance.submitted_by = self.request.user.profile
-    #     form.save()
-    #     return super().form_valid(form)
-    # def get(self, request, *args, **kwargs):
-    #     form = self.form_class(None)
-    #     return render(request, self.template_name, {'form': form})
-
+    def liked_by_current_user(request, question_id):
+        question = get_object_or_404(Question, pk=question_id)
+        return question.like_set.filter(user=request.user.profile) and True or False
+    def get_context_data(self, *args, **kwargs):
+        context = super(BoardView, self).get_context_data(*args, **kwargs)
+        board_questions = Question.objects.filter(board=context['board']).annotate(number_of_likes=Count('like'))
+        context['questions'] = board_questions.annotate(liked=Exists(Like.objects.filter(user=self.request.user.profile, question=OuterRef('pk'))))
+        return context
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             answer_form = AnswerForm(request.POST)
