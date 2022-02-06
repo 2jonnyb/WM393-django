@@ -13,6 +13,7 @@
     <ul>
         {% for question in questions %}
             {% if request.user.profile.profile_type == 'Tutor' or request.user.profile.profile_type == 'Student' and question.answered %}
+            <div class="container border">  
                 <h4>{{ question.title }}</h4>
                 <p>Asked by {{ question.submitted_by.user.first_name }} {{ question.submitted_by.user.last_name }} at {{ question.submit_date }}</p>
                 <p>{{ question.body }}</p>
@@ -23,10 +24,11 @@
                         <input type="hidden" name="question_answered" value="{{ question.pk }}">
                         <input type="submit", value="👍">
                     </form>
-                </div>
+                
+            </div>  
                 {% if question.answered %}
                     <p>{{ question.answer.body }}</p>
-                    <p>{{ question.answer.answered_by }} at {{ question.answer.answered_date }}</p>
+                    <p>Answered by {{ question.answer.answered_by }} at {{ question.answer.answered_date }}</p>
                 {% endif %}
             {% endif %}
             {% if request.user.profile.profile_type == 'Tutor' and not question.answered%}
@@ -36,11 +38,12 @@
                         <input type="hidden" name="question_answered" value="{{ question.pk }}">
                         Answer:
                         {{form.as_p}}
-                        <input type="submit" value="submit">
+                        <input type="submit" value="Submit">
                     </form>
                 </div>  
                     <button onclick=document.getElementById("answer{{ question.pk }}").style.display="block";this.hidden=true>Answer</button>
             {% endif %}
+        </div>
         {% endfor %}
     </ul>
 {% endblock content %}

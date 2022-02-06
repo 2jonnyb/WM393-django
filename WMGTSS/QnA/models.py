@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.template.defaultfilters import slugify
-from django.db.models import Count
 
 # Create your models here.
 
@@ -22,7 +21,6 @@ class Profile(models.Model):
     courses = models.ManyToManyField(Course, blank=True)
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
-        #return(self.user.username)
     def full_name(self):
         return f'{self.user.first_name} {self.user.last_name}'
     def profile_type(self):
@@ -59,16 +57,12 @@ class Board(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
-    def get_all_questions(self):
-        questions = self.posted_on_board.filter()
-        return questions.annotate(number_of_likes=Count('like'))
 
 class Question(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name="posted_on_board")
     submitted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=99)
     body = models.TextField(max_length=999)
-    #likes = models.IntegerField(default=0)
     submit_date = models.DateField(auto_now_add=True)
     answered = models.BooleanField(default=False)
 

@@ -4,12 +4,10 @@
         {% if request.user.profile.profile_type == 'Tutor' %}
             <a href="/create-board/">Create boards</a>
         {% endif %}
-        <p>{{ user.username }}'s Boards</p>
-        <ul>
-            {% for board in boards %}
-            <a href="{{ board.get_absolute_url }}"><li>{{ board.name }}</li></a>
-            {% endfor %}
-        </ul>
+        <h1>{{ user.username }}'s Boards</h1>
+        {% for board in boards %}
+        <h2><a href="{{ board.get_absolute_url }}" >{{ board.name }}</a></h2>
+        {% endfor %}
     {% else %}
         <p>You must be logged in to use this function!</p>
         <a href="{% url 'login' %}">Log In</a>

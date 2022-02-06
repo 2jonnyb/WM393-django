@@ -1,9 +1,17 @@
-<div class="header">
-    {% if user.is_authenticated %}
-    Hi {{ user.profile.full_name }} ({{ user.username }})! ({{ user.profile.profile_type }})
-    <p><a href="{% url 'logout' %}">Log Out</a></p>
-    {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">Log In</a>
-    {% endif %}
-</div>
+<header>
+    <div class="container clearfix">
+    <div class="navbar-wrapper">
+        <div class="conatiner">
+            <div class="float-right pt-2">
+                {% if user.is_authenticated %}
+                <span>Hi {{ user.profile.full_name }} ({{ user.username }})! ({{ user.profile.profile_type }})</span>
+                <a href="{% url 'logout' %}">Log Out</a>
+                {% else %}
+                <span>You are not logged in</span>
+                <a href="{% url 'login' %}">Log In</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+</header>
