@@ -1,4 +1,4 @@
-from .models import Question, Board, Answer
+from .models import Question, Board, Answer, Like
 from django.forms import ModelForm
 
 class QuestionForm(ModelForm):
@@ -15,3 +15,8 @@ class AnswerForm(ModelForm):
     class Meta:
         model = Answer
         fields = ['body']
+
+class LikeForm(ModelForm):
+    class Meta:
+        model = Like
+        fields = []

@@ -16,12 +16,30 @@
                 <h4>{{ question.title }}</h4>
                 <p>Asked by {{ question.submitted_by.user.first_name }} {{ question.submitted_by.user.last_name }} at {{ question.submit_date }}</p>
                 <p>{{ question.body }}</p>
-                <p>{{ question.number_of_likes }} likes</p>
-                {% if not question.answered %}
+                <div class="like" display="inline">  
+                    <form method='post' display="inline">
+                        {% csrf_token %}
+                        <span>{{question.number_of_likes }} likes</span>
+                        <input type="hidden" name="question_answered" value="{{ question.pk }}">
+                        <input type="submit", value="👍">
+                    </form>
+                </div>
+                {% if question.answered %}
                     <p>{{ question.answer.body }}</p>
                     <p>{{ question.answer.answered_by }} at {{ question.answer.answered_date }}</p>
-                    <button></button>
                 {% endif %}
+            {% endif %}
+            {% if request.user.profile.profile_type == 'Tutor' and not question.answered%}
+                <div class="answer" id="answer{{ question.pk }}" >  
+                    <form method='post'>
+                        {% csrf_token %}
+                        <input type="hidden" name="question_answered" value="{{ question.pk }}">
+                        Answer:
+                        {{form.as_p}}
+                        <input type="submit" value="submit">
+                    </form>
+                </div>  
+                    <button onclick=document.getElementById("answer{{ question.pk }}").style.display="block";this.hidden=true>Answer</button>
             {% endif %}
         {% endfor %}
     </ul>

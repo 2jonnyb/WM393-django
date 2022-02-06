@@ -82,5 +82,5 @@ class Answer(models.Model):
     answered_date = models.DateField(auto_now_add=True)
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
