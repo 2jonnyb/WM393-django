@@ -19,7 +19,7 @@ def create_board(request): # board creation view
     if request.method == "POST": # if request is a post request...
         board_form = BoardForm(request.POST) # ...instantiate a new BoardForm with the data from the request
         if board_form.is_valid(): # validate the form, if valid ...
-            board_form.instance.owner = Tutor.objects.get(pk=request.user.id) # ...add a field to the form, the owner should be the tutor that is sending the request
+            board_form.instance.owner = Tutor.objects.get(pk=request.user.profile.tutor.id) # ...add a field to the form, the owner should be the tutor that is sending the request
             board_form.save() # save the form, create the new board object
         return redirect('/') # return the user to the homepage
     board_form = BoardForm()
