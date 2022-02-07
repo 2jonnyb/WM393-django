@@ -1,10 +1,10 @@
 from .models import Question, Board, Answer, Like
 from django.forms import ModelForm
-
-class QuestionForm(ModelForm):
+# import models and define forms for them, django handles most of the work
+class QuestionForm(ModelForm): # inherit a ModelForm for each model...
     class Meta:
-        model = Question
-        fields = ['title', 'body']
+        model = Question # choose a model
+        fields = ['title', 'body'] # select the fields required for the form
 
 class BoardForm(ModelForm):
     class Meta:
@@ -19,4 +19,4 @@ class AnswerForm(ModelForm):
 class LikeForm(ModelForm):
     class Meta:
         model = Like
-        fields = []
+        fields = [] # no fields because liking is handled through a hidden field

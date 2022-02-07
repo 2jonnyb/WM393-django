@@ -1,17 +1,15 @@
 <header>
-    <div class="container clearfix">
-    <div class="navbar-wrapper">
+    <div class="container clearfix"> <!--bootstrap to frame content-->
         <div class="conatiner">
-            <div class="float-right pt-2">
-                {% if user.is_authenticated %}
-                <span>Hi {{ user.profile.full_name }} ({{ user.username }})! ({{ user.profile.profile_type }})</span>
-                <a href="{% url 'logout' %}">Log Out</a>
-                {% else %}
+            <div class="float-right pt-2"> <!--float-right makes this part right align-->
+                {% if user.is_authenticated %} <!--check if user is logged in-->
+                <span>Hi {{ user.profile.full_name }} ({{ user.username }})! ({{ user.profile.profile_type }})</span> <!--get the user's username and info and display-->
+                <a href="{% url 'logout' %}">Log Out</a> <!--get url for logout for link-->
+                {% else %} <!--show this part if the user is not logged in-->
                 <span>You are not logged in</span>
-                <a href="{% url 'login' %}">Log In</a>
+                <a href="{% url 'login' %}">Log In</a> <!--get url for log in link-->
                 {% endif %}
             </div>
         </div>
-    </div>
     </div>
 </header>

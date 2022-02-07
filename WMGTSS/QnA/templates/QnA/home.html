@@ -1,15 +1,15 @@
 {% extends "QnA/base.html" %}
 {% block content %}
-    {% if user.is_authenticated %}
-        {% if request.user.profile.profile_type == 'Tutor' %}
-            <a href="/create-board/">Create boards</a>
+    {% if user.is_authenticated %} <!--only show this part if the user is logged in-->
+        {% if request.user.profile.profile_type == 'Tutor' %} <!--only show this part to tutors-->
+            <a href="/create-board/">Create boards</a> <!--link to board creation-->
         {% endif %}
-        <h1>{{ user.username }}'s Boards</h1>
-        {% for board in boards %}
-        <h2><a href="{{ board.get_absolute_url }}" >{{ board.name }}</a></h2>
+        <h1>{{ user.username }}'s Boards</h1> <!--put the user's username in the heading-->
+        {% for board in boards %} <!--loop through all boards, recieved from views as context-->
+        <h2><a href="{{ board.get_absolute_url }}" >{{ board.name }}</a></h2> <!--link to the board-->
         {% endfor %}
     {% else %}
         <p>You must be logged in to use this function!</p>
-        <a href="{% url 'login' %}">Log In</a>
+        <a href="{% url 'login' %}">Log In</a> <!--link to login-->
     {% endif %}
 {% endblock content %}

@@ -1,47 +1,47 @@
-{% extends "QnA/base.html" %}
-{% block content %}
-    <a href="/">Back to My Boards</a>
+{% extends "QnA/base.html" %} <!--this template extends the base.html template-->
+{% block content %} <!--this part will go in the content part of the base.html-->
+    <a href="/">Back to My Boards</a> <!--link to home-->
     <div>
         <h2>
-            {{ board.name }}
+            {{ board.name }} <!--show the name of the board this page is about-->
         </h2>
     </div>
-    {% if request.user.profile.profile_type == 'Student' %}
-        <a href="/boards/{{ request.resolver_match.kwargs.board_slug }}/submit-question">Submit a Question</a>
+    {% if request.user.profile.profile_type == 'Student' %} <!--only show this part to students-->
+        <a href="/boards/{{ request.resolver_match.kwargs.board_slug }}/submit-question">Submit a Question</a> <!--link to submit question form-->
     {% endif %}
     <h3>Questions</h3>
     <ul>
-        {% for question in questions %}
-            {% if request.user.profile.profile_type == 'Tutor' or request.user.profile.profile_type == 'Student' and question.answered %}
-            <div class="container border">  
-                <h4>{{ question.title }}</h4>
-                <p>Asked by {{ question.submitted_by.user.first_name }} {{ question.submitted_by.user.last_name }} at {{ question.submit_date }}</p>
-                <p>{{ question.body }}</p>
+        {% for question in questions %} <!--loop through the questions and do something for each. questions are accessed as context passed to view-->
+            {% if request.user.profile.profile_type == 'Tutor' or request.user.profile.profile_type == 'Student' and question.answered %} <!--only answered questions to students-->
+            <div class="container border">  <!--bootstrap to put each question in a box-->
+                <h4>{{ question.title }}</h4> <!--question's title-->
+                <p>Asked by {{ question.submitted_by.user.first_name }} {{ question.submitted_by.user.last_name }} at {{ question.submit_date }}</p> <!--who asked the question and when-->
+                <p>{{ question.body }}</p> <!--main body of the question-->
                 <div class="like" display="inline">
-                    <form method='post' display="inline">
-                        {% csrf_token %}
-                        <span {%if question.liked %}style="font-weight: bolder" {% endif %}>{{question.number_of_likes }} likes</span>
-                        <input type="hidden" name="question_answered" value="{{ question.pk }}">
-                        <input type="submit", value="👍">
+                    <form method='post' display="inline"> <!--like button form, even though there are no text inputs, the pressing of the like button acts as a form-->
+                        {% csrf_token %} <!--django security token-->
+                        <span {%if question.liked %}style="font-weight: bolder" {% endif %}>{{question.number_of_likes }} likes</span> <!--show how many likes the question has-->
+                        <input type="hidden" name="question_answered" value="{{ question.pk }}"> <!--hidden form field to pass reference of which question was liked to views-->
+                        <input type="submit", value="👍"> <!--button with thumbs up for like button-->
                     </form>
                 
             </div>  
-                {% if question.answered %}
-                    <p>{{ question.answer.body }}</p>
-                    <p>Answered by {{ question.answer.answered_by }} at {{ question.answer.answered_date }}</p>
+                {% if question.answered %} <!--only show the answer if the question has one-->
+                    <p>{{ question.answer.body }}</p> <!--show the answer-->
+                    <p>Answered by {{ question.answer.answered_by }} at {{ question.answer.answered_date }}</p> <!--when and who answered-->
                 {% endif %}
             {% endif %}
-            {% if request.user.profile.profile_type == 'Tutor' and not question.answered%}
-                <div class="answer" id="answer{{ question.pk }}" >  
+            {% if request.user.profile.profile_type == 'Tutor' and not question.answered %} <!--only show the answer button if the user is a tutor and the question is unanswered-->
+                <div class="answer" id="answer{{ question.pk }}" >   <!--associate the question with the answer so the javascript button can show only this one-->
                     <form method='post'>
-                        {% csrf_token %}
-                        <input type="hidden" name="question_answered" value="{{ question.pk }}">
+                        {% csrf_token %} 
+                        <input type="hidden" name="question_answered" value="{{ question.pk }}"> <!--hidden field to pass question id to view-->
                         Answer:
-                        {{form.as_p}}
-                        <input type="submit" value="Submit">
+                        {{form.as_p}} <!--django handles form for text fields-->
+                        <input type="submit" value="Submit"> <!--submit button-->
                     </form>
                 </div>  
-                    <button onclick=document.getElementById("answer{{ question.pk }}").style.display="block";this.hidden=true>Answer</button>
+                    <button onclick=document.getElementById("answer{{ question.pk }}").style.display="block";this.hidden=true>Answer</button> <!--button that reveals the answer form, only unhides the corresponding answer form using the id-->
             {% endif %}
         </div>
         {% endfor %}
